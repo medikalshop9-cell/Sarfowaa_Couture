@@ -26,6 +26,7 @@ const allowedOrigins = [
   process.env.FRONTEND_URL || 'http://localhost:5173',
   'http://localhost:5173',
   'http://localhost:4173',
+  'https://sarfowaa-couture.vercel.app',
 ];
 app.use(cors({
   origin: (origin, cb) => {
@@ -70,6 +71,11 @@ app.use((err, _req, res, _next) => {
   res.status(err.status || 500).json({ error: err.message || 'Internal server error' });
 });
 
-app.listen(PORT, () => {
-  console.log(`✅  Sarfowaa backend running on http://localhost:${PORT}`);
-});
+// Only start the HTTP server when run directly (not when imported by Vercel serverless)
+if (require.main === module) {
+  app.listen(PORT, () => {
+    console.log(`✅  Sarfowaa backend running on http://localhost:${PORT}`);
+  });
+}
+
+module.exports = app;
